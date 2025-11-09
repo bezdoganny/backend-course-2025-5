@@ -1,0 +1,22 @@
+# === 1. GET-запит (отримуємо картинку з http.cat і кешуємо) ===
+curl.exe -v http://127.0.0.1:3000/200 --output cat200.jpg
+
+# === 2. GET-запит повторно (повинно віддати з кешу) ===
+curl.exe -v http://127.0.0.1:3000/200 --output cat200_from_cache.jpg
+
+# === 3. PUT-запит (додаємо власну картинку у кеш під кодом 250) ===
+# Замініть шлях до вашого файлу на існуючий .jpg
+curl.exe -v -X PUT http://127.0.0.1:3000/250 --data-binary "@mycat.jpg" -H "Content-Type: image/jpeg"
+
+# === 4. GET-запит для перевірки, що 250 тепер збережено у кеші ===
+curl.exe -v http://127.0.0.1:3000/250 --output cat250_from_cache.jpg
+
+# === 5. DELETE-запит (видаляємо 250 з кешу) ===
+curl.exe -v -X DELETE http://127.0.0.1:3000/250
+
+# === 6. GET після DELETE (перевірка, що повертає 404 або знову бере з http.cat) ===
+curl.exe -v http://127.0.0.1:3000/250 --output cat250_after_delete.jpg
+
+# === 7. Невірний метод (перевіряємо, що сервер повертає 405 Method Not Allowed) ===
+curl.exe -v -X PATCH http://127.0.0.1:3000/200
+
